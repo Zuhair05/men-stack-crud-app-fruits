@@ -6,8 +6,9 @@ const dotenv = require('dotenv').config(); // making .env file available to the 
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-
+const path = require('path');
 const app = express();
+app.use(express.static(path.join(__dirname, "public")))
 app.use(morgan('dev'));
 
 // Connect to MongoDB
@@ -40,7 +41,7 @@ app.post('/fruits', async (req, res) => {
      }
      //use a  mongoose method to add it to the DB
      let createdFruit = await Fruit.create(fruitData);
-     res.send(createdFruit);
+     res.redirect('/');
 })
 
 app.listen(3000, () => {
