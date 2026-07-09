@@ -16,20 +16,31 @@ mongoose.connection.on('connected', () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}`);
 });
 const Fruit = require('./models/fruit.js');
+app.use(express.urlencoded({ extended: false }));// Middleware to parse URL-encoded bodies
 
-
+//HOME PAGE 
 app.get('/', async (req, res) => {
   res.render('home.ejs');
 });
 
-// this route will change often 
-app.get('/fruits', async (req, res) => {
-    //use a  mongoose method to find all mango 
-    let notReady = await Fruit.find({
-        isReadyToEat: false
-    })
-    //view the created fruit 
-    res.send(notReady)
+// GET /fruits/new (form to create a new fruit)
+app.get('/fruits/new', async (req, res) => {
+  res.render('new.ejs');
+});
+
+//POST /fruits (create a new fruit in DB)
+app.post('/fruits', async (req, res) => {
+    //fruit object should match fruit model 
+    const fruitData = {}
+        fruitData.name= req.body.name
+     if(req.body.isReadyToEat === 'on') {
+        fruitData.isReadyToEat = true
+     }else {
+        fruitData.isReadyToEat = false
+     }
+     //use a  mongoose method to add it to the DB
+     let createdFruit = await Fruit.create(fruitData);
+     res.send(createdFruit);
 })
 
 app.listen(3000, () => {
@@ -38,22 +49,26 @@ app.listen(3000, () => {
 
 //code graveyard  ======================================================
 //creat a fruit object 
-// const fruitData = {}
-// fruitData.isReadyToEat = false
-//use a  mongoose method to add it to the DB 
-// fruitData.name = 'mango'
-// let createdFruit = await Fruit.create(fruitData)
+    // const fruitData = {}
+    // fruitData.isReadyToEat = false
+    //use a  mongoose method to add it to the DB 
+    // fruitData.name = 'mango'
+    // let createdFruit = await Fruit.create(fruitData)
 
 //Find all fruits in the DB========================
 //use a  mongoose method to add it to the DB 
-// let allfruits = await Fruit.find()
+    // let allfruits = await Fruit.find()
 
 // Find all fruit with name mango========================
-// let allfruits = await Fruit.find({
-//         name: 'mango'
-//     })
+    // let allfruits = await Fruit.find({
+    //         name: 'mango'
+    //     })
 
 //use a  mongoose method to find all fruit that are not ready to eat========================
     // let notReady = await Fruit.find({
     //     isReadyToEat: false
     // })
+
+//use a  mongoose method to find and update a fruit by its id=========================
+    // let updateFruit= await Fruit.findByIdAndUpdate("6a4f6c54e95591c2d8f0d1ed",
+    //     {name: 'pineapple'}, {new:true})
