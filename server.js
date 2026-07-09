@@ -24,24 +24,36 @@ app.get('/', async (req, res) => {
 
 // this route will change often 
 app.get('/fruits', async (req, res) => {
-    //creat a fruit object 
-    const fruitData = {}
-    fruitData.name = 'mango'
-    fruitData.isReadyToEat = false
-    //use a  mongoose method to add it to the DB 
-    let createdFruit = await Fruit.create(fruitData)
+    //use a  mongoose method to find all mango 
+    let notReady = await Fruit.find({
+        isReadyToEat: false
+    })
     //view the created fruit 
-    res.send(createdFruit)
+    res.send(notReady)
 })
 
 app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+    console.log('Server is running on port 3000');
 });
 
 //code graveyard  ======================================================
 //creat a fruit object 
-    // const fruitData = {}
-    // fruitData.name = 'mango'
-    // fruitData.isReadyToEat = false
-    //use a  mongoose method to add it to the DB 
-    // let createdFruit = await Fruit.create(fruitData)
+// const fruitData = {}
+// fruitData.isReadyToEat = false
+//use a  mongoose method to add it to the DB 
+// fruitData.name = 'mango'
+// let createdFruit = await Fruit.create(fruitData)
+
+//Find all fruits in the DB========================
+//use a  mongoose method to add it to the DB 
+// let allfruits = await Fruit.find()
+
+// Find all fruit with name mango========================
+// let allfruits = await Fruit.find({
+//         name: 'mango'
+//     })
+
+//use a  mongoose method to find all fruit that are not ready to eat========================
+    // let notReady = await Fruit.find({
+    //     isReadyToEat: false
+    // })
