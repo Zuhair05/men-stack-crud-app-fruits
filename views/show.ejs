@@ -1,0 +1,18 @@
+<%- include('./partials/nav') %>
+
+    <h1>The Show Page</h1>
+    <h2><%= foundFruit.name %></h2>
+    <!-- <% if (foundFruit.isReadyToEat === true) { %>
+        <p>Yes, this fruit is ready to eat!</p>
+    <% } else { %>
+        <p>No, this fruit is not ready to eat.</p>
+    <% } %> -->
+    <p><%= foundFruit.isReadyToEat? 'Yes, this fruit is ready to eat!🤤' : 'No, this fruit is not ready to eat.⌛' %></p>
+    <p>Description: 2BD for the killo</p>
+    <form action="/fruits/<%= foundFruit.id %>?_method=DELETE" method="POST">
+        <button type="submit">Delete</button>
+    </form>
+    <a href="/fruits/<%= foundFruit.id %>/edit">Edit <%= foundFruit.name %></a>
+    
+</body>
+</html>

@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const path = require('path');
 const app = express();
+const methodOverride = require('method-override');
 app.use(express.static(path.join(__dirname, "public")))
 app.use(morgan('dev'));
 
@@ -18,6 +19,7 @@ mongoose.connection.on('connected', () => {
 });
 const Fruit = require('./models/fruit.js');
 app.use(express.urlencoded({ extended: false }));// Middleware to parse URL-encoded bodies
+app.use(methodOverride('_method'));
 
 //HOME PAGE 
 app.get('/', async (req, res) => {
@@ -41,8 +43,35 @@ app.post('/fruits', async (req, res) => {
      }
      //use a  mongoose method to add it to the DB
      let createdFruit = await Fruit.create(fruitData);
-     res.redirect('/');
+     res.redirect('/fruits');
 })
+
+//GET /fruits (list all fruits)
+app.get('/fruits', async (req, res) => {
+    let allfruits = await Fruit.find()
+   res.render('index.ejs', {
+      allfruits: allfruits 
+    });
+});
+
+app.get('/fruits/:id', async (req, res) => {
+    let foundFruit = await Fruit.findById(req.params.id)
+    res.render('show.ejs', {
+        foundFruit: foundFruit
+    });
+});
+
+app.delete('/fruits/:id', async (req, res) => {
+    await Fruit.findByIdAndDelete(req.params.id)
+    res.redirect('/fruits');
+});
+
+app.get('/fruits/:id/edit', async (req, res) => {
+    let foundFruit = await Fruit.findById(req.params.id)
+    res.render('edit.ejs', {
+        foundFruit: foundFruit
+    });
+});
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');

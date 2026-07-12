@@ -1,0 +1,20 @@
+<%- include('./partials/nav') %>
+
+    <h1>All Fruits</h1>
+ 
+    <ul>
+        <% allfruits.forEach(item => { %>
+            <li>
+               <p> name: <%= item.name %> </p>
+            </li>
+            <li>
+               <p>Ready to Eat: <%= item.isReadyToEat? 'Yes' : 'No' %></p>
+            </li>
+            <li>
+                <a href="/fruits/<%= item.id %>">View Fruit details</a>
+            </li>
+            <hr>
+        <% }) %>
+    </ul>
+</body>
+</html>
