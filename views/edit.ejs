@@ -6,7 +6,7 @@
         <br>
         <div class="checkbox-div">
             <label for="isReadyToEat">Is Ready to Eat?</label>
-            <input type="checkbox" id="isReadyToEat" name="isReadyToEat" <%= foundFruit.isReadyToEat  %>? checked : '' %>>
+            <input type="checkbox" id="isReadyToEat" name="isReadyToEat" <%= foundFruit.isReadyToEat ? 'checked' : '' %>>
         </div>
         <br>
         <button type="submit">Update Fruit</button>

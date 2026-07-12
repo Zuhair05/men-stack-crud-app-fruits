@@ -73,6 +73,14 @@ app.get('/fruits/:id/edit', async (req, res) => {
     });
 });
 
+app.put('/fruits/:id', async (req, res) => {
+    let updatedFruitData = await Fruit.findByIdAndUpdate(req.params.id, {
+        name: req.body.name,
+        isReadyToEat: req.body.isReadyToEat === 'on' ? true : false
+    }, { new: true });
+    res.redirect('/fruits');
+});
+
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
