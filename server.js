@@ -9,6 +9,9 @@ const mongoose = require('mongoose');
 const path = require('path');
 const app = express();
 const methodOverride = require('method-override');
+
+const fruitCtrl = require('./controllers/fruits.controllers.js');
+
 app.use(express.static(path.join(__dirname, "public")))
 app.use(morgan('dev'));
 
@@ -17,7 +20,7 @@ mongoose.connect(process.env.MONGODB_URI)
 mongoose.connection.on('connected', () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}`);
 });
-const Fruit = require('./models/fruit.js');
+// const Fruit = require('./models/fruit.js');
 app.use(express.urlencoded({ extended: false }));// Middleware to parse URL-encoded bodies
 app.use(methodOverride('_method'));
 
@@ -27,59 +30,22 @@ app.get('/', async (req, res) => {
 });
 
 // GET /fruits/new (form to create a new fruit)
-app.get('/fruits/new', async (req, res) => {
-  res.render('new.ejs');
-});
+app.get('/fruits/new', fruitCtrl.showNewForm);
 
 //POST /fruits (create a new fruit in DB)
-app.post('/fruits', async (req, res) => {
-    //fruit object should match fruit model 
-    const fruitData = {}
-        fruitData.name= req.body.name
-     if(req.body.isReadyToEat === 'on') {
-        fruitData.isReadyToEat = true
-     }else {
-        fruitData.isReadyToEat = false
-     }
-     //use a  mongoose method to add it to the DB
-     let createdFruit = await Fruit.create(fruitData);
-     res.redirect('/fruits');
-})
+app.post('/fruits', fruitCtrl.create);
 
 //GET /fruits (list all fruits)
-app.get('/fruits', async (req, res) => {
-    let allfruits = await Fruit.find()
-   res.render('index.ejs', {
-      allfruits: allfruits 
-    });
-});
+app.get('/fruits', fruitCtrl.index);
 
-app.get('/fruits/:id', async (req, res) => {
-    let foundFruit = await Fruit.findById(req.params.id)
-    res.render('show.ejs', {
-        foundFruit: foundFruit
-    });
-});
+app.get('/fruits/:id', fruitCtrl.show);
 
-app.delete('/fruits/:id', async (req, res) => {
-    await Fruit.findByIdAndDelete(req.params.id)
-    res.redirect('/fruits');
-});
+app.delete('/fruits/:id', fruitCtrl.deleteFruit);
 
-app.get('/fruits/:id/edit', async (req, res) => {
-    let foundFruit = await Fruit.findById(req.params.id)
-    res.render('edit.ejs', {
-        foundFruit: foundFruit
-    });
-});
+app.get('/fruits/:id/edit', fruitCtrl.edit);
 
-app.put('/fruits/:id', async (req, res) => {
-    let updatedFruitData = await Fruit.findByIdAndUpdate(req.params.id, {
-        name: req.body.name,
-        isReadyToEat: req.body.isReadyToEat === 'on' ? true : false
-    }, { new: true });
-    res.redirect('/fruits');
-});
+
+app.put('/fruits/:id', fruitCtrl.update);
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
